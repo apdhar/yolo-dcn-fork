@@ -30,6 +30,7 @@ __all__ = (
     "C3Ghost",
     "GhostBottleneck",
     "Bottleneck",
+    "DCN_Bottleneck"
     "BottleneckCSP",
     "Proto",
     "RepC3",
@@ -256,7 +257,7 @@ class C2f_Def_Conv(nn.Module):
         self.c = int(c2 * e)  # hidden channels
         self.cv1 = DeformableConv(c1, 2 * self.c, 1, 1)
         self.cv2 = DeformableConv((2 + n) * self.c, c2, 1)  # optional act=FReLU(c2)
-        self.m = nn.ModuleList(Bottleneck(self.c, self.c, shortcut, g, k=((3, 3), (3, 3)), e=1.0) for _ in range(n))
+        self.m = nn.ModuleList(DCN_Bottleneck(self.c, self.c, shortcut, g, k=((3, 3), (3, 3)), e=1.0) for _ in range(n))
 
     def forward(self, x):
         """Forward pass through C2f layer."""
@@ -355,6 +356,22 @@ class GhostBottleneck(nn.Module):
     def forward(self, x):
         """Applies skip connection and concatenation to input tensor."""
         return self.conv(x) + self.shortcut(x)
+    
+
+
+# Ensure Bottleneck is implemented in the same module, as it is used in C2f.
+class DCN_Bottleneck(nn.Module):
+    """Dummy implementation of Bottleneck for compatibility."""
+    def __init__(self, c1, c2, shortcut=True, g=1, k=((3, 3), (3, 3)), e=0.5):
+        super().__init__()
+        self.conv1 = DeformableConv(c1, c2, k[0][0], 1)
+        self.conv2 = DeformableConv(c2, c2, k[1][0], 1)
+        self.add = shortcut and c1 == c2
+
+    def forward(self, x):
+        y = self.conv1(x)
+        y = self.conv2(y)
+        return x + y if self.add else y
 
 
 class Bottleneck(nn.Module):

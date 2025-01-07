@@ -26,6 +26,7 @@ from ultralytics.nn.modules import (
     AConv,
     ADown,
     Bottleneck,
+    DCN_Bottleneck,
     BottleneckCSP,
     C2f,
     DeformableConv,
@@ -967,11 +968,11 @@ def parse_model(d, ch, verbose=True):  # model_dict, input_channels(3)
         n = n_ = max(round(n * depth), 1) if n > 1 else n  # depth gain
         if m in {
             Classify,
-            
             Conv,
             ConvTranspose,
             GhostConv,
             Bottleneck,
+            DCN_Bottleneck,
             GhostBottleneck,
             SPP,
             SPPF,
