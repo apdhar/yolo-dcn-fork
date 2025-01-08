@@ -648,7 +648,7 @@ def parse_model(d, ch, verbose=True):  # model_dict, input_channels(3) 模型配
                     args[j] = locals()[a] if a in locals() else ast.literal_eval(a)
 
         n = n_ = max(round(n * depth), 1) if n > 1 else n  # 深度缩放
-        if m in (Classify, Conv, ConvTranspose, GhostConv, Bottleneck, GhostBottleneck, SPP, SPPF, DWConv, Focus,
+        if m in (SwinTransformer, Classify, Conv, ConvTranspose, GhostConv, Bottleneck, GhostBottleneck, SPP, SPPF, DWConv, Focus,
                  BottleneckCSP, C1, C2, C2f, C3, C3TR, C3Ghost, nn.ConvTranspose2d, DWConvTranspose2d, C3x, RepC3,
                  C2f_SE,
                  GCS, C2f_GCS, C2f_GCS05, C2f_GCSCAM, DSConv, DSConv_C2f, C2f_DCN, C2f_DCN2,
